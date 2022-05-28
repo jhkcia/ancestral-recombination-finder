@@ -12,7 +12,7 @@ def find_for_items(start, end):
 
     XX = sf.find_all_spans(MAX_THRESHOLD, start, end)
 
-    with open(f'from{start}_to{end}.txt', 'w') as f:
+    with open(f'./result/from{start}_to{end}.txt', 'w') as f:
         for item in XX:
             f.write("%s\n" % item)
 
