@@ -7,7 +7,7 @@ vcf = convert_mutation_df_to_vcf(muts)
 
 sf = SpanFinder(vcf, False)
 
-XX = sf.find_all_spans(10, 2)
+XX = sf.find_all_spans(10, -1)
 
 with open('your_file.txt', 'w') as f:
     for item in XX:
