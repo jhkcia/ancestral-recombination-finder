@@ -54,10 +54,14 @@ class SpanFinder:
         self.print_log and print(f'removing samples {inconsistant_samples}')
         return new_df[~new_df['sample'].isin(inconsistant_samples)]
 
-    def find_all_spans(self, threshold_percent, limit):
+    def find_all_spans(self, threshold_percent, start, end):
         result = []
+
         for index, p in enumerate(self.positions):
-            if limit == index:
+            if index<start:
+                continue
+
+            if index>end:
                 print('LIMIT EXCEED ')
                 break
             print(f'checking position {index+1} of {len(self.positions)}')
