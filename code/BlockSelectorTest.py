@@ -14,3 +14,5 @@ haplos = [
 bs = BlockSelector(haplos)
 bs.find_best_match(0, 1)
 result = bs.get_best_match_haplos()
+print(result)
+assert result == [0, 1, 4]
