@@ -20,27 +20,31 @@ def convert_mutation_df_to_vcf(df):
 
 
 import os
-def read_result():
+
+def add_haplos(result_dict, path):
+    print(f'Parsing file {path}')
+    with open(path, encoding='utf-8') as f:
+        for l in f.readlines():
+            j = eval(l)
+            result_dict[j[0]] = j[1]
+
+def get_all_haplo_input_files():
     root_dir = './result/'
-    result ={}
+    result = []
     for x in os.listdir(root_dir):
         if x.endswith(".txt") and x.startswith('from'):
-            # Prints only text file present in My Folder
-            print(f'Parsing file {x}')
-            with open(root_dir+x, encoding='utf-8') as f:
-                for l in f.readlines():
-                    j = eval(l)
-                    result[j[0]] = j[1]
+            result.append(root_dir+x)
     return result
 
-# def generate_spans(result):
-#     spans = []
-    
-#     for x in result.keys():
-#         for part in result[x]:
-#             spans.append([x, part[0], len(part[1])])
+def read_result(input_file=None):
+    result ={}
+    if input_file==None:
+        for path in get_all_haplo_input_files():
+            add_haplos(result ,path)
+    else:
+        add_haplos(result, input_file)
 
-#     return spans
+    return result
 
 def generate_full_spans(result):
     spans = []
@@ -52,7 +56,7 @@ def generate_full_spans(result):
     return spans
 
 
-def read_spans():
-    result = read_result()
+def read_spans(input_file=None):
+    result = read_result(input_file)
     spans = generate_full_spans(result)
     return spans
