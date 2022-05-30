@@ -62,7 +62,9 @@ class TimeFinder:
 
     def find_all_times(self):
         H = []
-        for h in self.haplos:
+        for index, h in enumerate(self.haplos):
+            if index % 10 == 0:
+                print(f'inferring {index+1} of {len(self.haplos)}')
             t = self.find_mrca_time(h[0], h[1], h[2])
             H.append([h[0], h[1], len(h[2]), t])
         return H
