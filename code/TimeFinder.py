@@ -54,7 +54,8 @@ class TimeFinder:
         DEBUG and print(f'start inferring time ')
         inferred_ts = tsinfer.infer(sample_data)
         DEBUG and print(f'start inferring date  for {inferred_ts.num_trees} Trees')
-        dated_ts = tsdate.date(inferred_ts, Ne=10000, mutation_rate=1e-8)
+        simplified_tree = tsdate.preprocess_ts(inferred_ts)
+        dated_ts = tsdate.date(simplified_tree, Ne=10000, mutation_rate=1e-8)
         T =  dated_ts.max_root_time
         DEBUG and print(T)
         return T
