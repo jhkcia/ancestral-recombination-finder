@@ -1,4 +1,4 @@
-DEBUG = False
+DEBUG = True
 import tsinfer
 import tsdate
 class TimeFinder:
