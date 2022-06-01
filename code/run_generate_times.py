@@ -10,7 +10,7 @@ def infer_times(path):
     tf = TimeFinder(spans, population, mutation_df)
 
     times = tf.find_all_times()
-    file_name = f"time_{d.split('/')[-1]}"
+    file_name = f"infer_time_{path.split('/')[-1]}"
     with open(f'./result/{file_name}', 'w') as f:
         f.write("%s\n" % times)
 
