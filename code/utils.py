@@ -46,10 +46,12 @@ def read_result(input_file=None):
 
     return result
 
-def generate_full_spans(result):
+def generate_full_spans(result, add_single_point):
     spans = []
     
     for x in result.keys():
+        if add_single_point:
+            spans.append([x,x, []])
         for part in result[x]:
             spans.append([x, part[0], part[1]])
 
@@ -58,7 +60,7 @@ def generate_full_spans(result):
 
 def read_spans(input_file=None):
     result = read_result(input_file)
-    spans = generate_full_spans(result)
+    spans = generate_full_spans(result, True)
     return spans
 
 

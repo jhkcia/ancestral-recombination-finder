@@ -1,15 +1,13 @@
 DEBUG = False
+from math import floor
 import tsinfer
 import tsdate
 class TimeFinder:
     def __init__(self, haplos, population, mutations):
         self.haplos = haplos
-        self.min_index = self._get_start_snp()
-        self.max_index = self._get_last_snp()
         self.positions = self.get_positions()
         self.population = population
         self.mutations_dict = self._generate_mutation_dict(mutations)
-
 
     def _generate_mutation_dict(self, mutation_df):
         mutation_dict = dict()
@@ -26,15 +24,9 @@ class TimeFinder:
         l.sort()
         return l
 
-    def _get_last_snp(self):
-        return max(list(zip(*self.haplos))[1])
-
-    def _get_start_snp(self):
-        return min(list(zip(*self.haplos))[0])
-    
     def find_mrca_time(self, start, end, removal):
         positions = [p for p in self.positions if p>=start and p<=end]
-        L = max(positions)- min(positions)+1
+        L = floor(end- start+1)
         DEBUG and print(f'start finding tmrca for position {start} to {end} with Length {L}')
         start = min(positions)
         sites = []
@@ -63,7 +55,7 @@ class TimeFinder:
     def find_all_times(self):
         H = []
         for index, h in enumerate(self.haplos):
-            if index % 10 == 0:
+            if index % 50 == 0:
                 print(f'inferring {index+1} of {len(self.haplos)}')
             t = self.find_mrca_time(h[0], h[1], h[2])
             H.append([h[0], h[1], len(h[2]), t])
