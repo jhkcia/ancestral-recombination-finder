@@ -60,3 +60,58 @@ def read_spans(input_file=None):
     result = read_result(input_file)
     spans = generate_full_spans(result)
     return spans
+
+
+
+def get_timed_haplo_input_files():
+    root_dir = './result/'
+    result = []
+    for x in os.listdir(root_dir):
+        if x.endswith(".txt") and x.startswith('infer_time'):
+            result.append(root_dir+x)
+    return result
+
+def add_timed_haplos(result_dict, path):
+    print(f'Parsing file {path}')
+    with open(path, encoding='utf-8') as f:
+        for l in f.readlines():
+            line = eval(l)
+            for j in line:
+                result_dict[f"{j[0]}_{j[1]}"] = j
+
+
+def read_timed_result(input_file=None):
+    result ={}
+    if input_file==None:
+        for path in get_timed_haplo_input_files():
+            add_timed_haplos(result ,path)
+    else:
+        add_timed_haplos(result, input_file)
+
+    return result
+
+def generate_timed_spans(result):
+    spans = []
+    
+    for x in result.values():
+        spans.append(x)
+
+    return spans
+
+def read_timed_spans(input_file=None):
+    result = read_timed_result(input_file)
+    spans = generate_timed_spans(result)
+    return spans
+
+from SNPDataSet import get_snp_dfs
+
+
+def read_full_timed_spans(input_file=None):
+    spans = read_timed_spans(input_file)
+    muts = get_snp_dfs()
+    positions = list(muts['position'].unique())
+    R = []
+    for s in spans:
+        x = len([p for p in positions if p>=s[0] and p<=s[1]])
+        R.append([s[0], s[1], s[2], s[3], x])
+    return R

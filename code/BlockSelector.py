@@ -1,4 +1,16 @@
 DEBUG = False
+import math
+def find_haplo_score(haplo, Rho):
+    K=haplo[4]
+
+    T_est = haplo[3]/1000
+    L = haplo[1]-haplo[0]+1
+    removal = haplo[2]
+    # h_score =math.exp((-1/2)*K*Rho*T_est)
+    h_score =(1/2)*K*Rho*T_est*L
+    # print(f'H_SCORE [K={K}, Rho={Rho}, T_est={T_est}, L={L}, Removal = {removal}] = {h_score}')
+    return h_score
+
 class BlockState:
     def __init__(self, score, previous, kind):
         self.score = score
@@ -8,6 +20,7 @@ class BlockState:
         return f'{self.score}, {self.previous}, {self.kind}'
 class BlockSelector:
     def __init__(self, haplos, total_population_size):
+        # print('jiji')
         self.haplos = haplos
         self.min_index = self._get_start_snp()
         self.max_index = self._get_last_snp()
@@ -53,10 +66,12 @@ class BlockSelector:
                 prev_pos = self.positions[i-1] 
                 min_score = self.states[prev_pos].score + 1
                 self.states[pos] = BlockState(min_score, prev_pos, 'Recombinatoin')
+                DEBUG and print(f'R_SCORE_ {1}')
                 
                 for haplo in self._get_haplos_end_in(pos):
                     previous_index = haplo[0]
-                    haplo_score = self.states[previous_index].score+removal_score * (haplo[2]/(self.get_haplo_length(haplo[0], haplo[1], )*self.total_population_size))
+                    h_score = find_haplo_score(haplo, removal_score)
+                    haplo_score = self.states[previous_index].score+ h_score
                     if haplo_score< min_score:
                         min_score = haplo_score
                         self.states[pos] = BlockState(min_score, previous_index, 'Block')
@@ -94,10 +109,9 @@ class BlockSelector:
                 recombinations+=1
 
             index = state.previous
-        if haplos>0:
-            haplos-=1
+
         print(f'recomb = {recombinations}, removal={removal}, haplos = {haplos}')
-        return removal, recombinations+haplos
+        return removal, recombinations, haplos
         
 
 

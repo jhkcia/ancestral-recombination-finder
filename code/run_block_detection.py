@@ -1,11 +1,12 @@
 
-from utils import read_result_spans
+from utils import read_full_timed_spans
 
-spans = read_result_spans()
+spans = read_full_timed_spans(None)
 
 from BlockSelector import BlockSelector
 
 for m in range(4000, 7000, 50):
+    print(f'checking M= {m}')
     bs = BlockSelector(spans, 2504*2)
     bs.find_best_match(m)
 
