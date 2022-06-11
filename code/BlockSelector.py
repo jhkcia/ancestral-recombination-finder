@@ -1,58 +1,42 @@
 DEBUG = False
-import math
-def find_haplo_score(haplo, Rho):
-    K=haplo[4]
 
-    T_est = haplo[3]/1000
-    L = haplo[1]-haplo[0]+1
-    removal = haplo[2]
-    # h_score =math.exp((-1/2)*K*Rho*T_est)
-    h_score =(1/2)*K*Rho*T_est*L
-    # print(f'H_SCORE [K={K}, Rho={Rho}, T_est={T_est}, L={L}, Removal = {removal}] = {h_score}')
+def find_mosaic_score(mosaic, Rho):
+    K=mosaic[4]
+    T_est = mosaic[3]/1000
+    L = mosaic[1]-mosaic[0]+1
+    removal = mosaic[2]
+    h_score =(1/2)*K*Rho*T_est # *L
     return h_score
 
 class BlockState:
-    def __init__(self, score, previous, kind):
+    def __init__(self, score, previous):
         self.score = score
         self.previous = previous
-        self.kind = kind
     def __str__(self) -> str:
-        return f'{self.score}, {self.previous}, {self.kind}'
+        return f'{self.score}, {self.previous}'
+
 class BlockSelector:
-    def __init__(self, haplos, total_population_size):
-        # print('jiji')
-        self.haplos = haplos
-        self.min_index = self._get_start_snp()
-        self.max_index = self._get_last_snp()
+    def __init__(self, mosaics):
+        self.mosaics = mosaics
+        self.last_position = max(list(zip(*self.mosaics))[1])
+        self.first_position = min(list(zip(*self.mosaics))[0])
         self.states = {}
         self.positions = self.get_positions()
-        self.total_population_size = total_population_size
 
-    def _get_last_snp(self):
-        return max(list(zip(*self.haplos))[1])
-
-    def _get_start_snp(self):
-        return min(list(zip(*self.haplos))[0])
-    
-    def _get_haplos_end_in(self, index):
+    def _get_mosaics_end_in(self, index):
         result = []
-        for x in self.haplos:
+        for x in self.mosaics:
             if x[1] == index:
                 result.append(x)
         return result
 
     def get_positions(self):
-        l1 = list(list(zip(*self.haplos))[0])
-        l2 = list(list(zip(*self.haplos))[1])
+        l1 = list(list(zip(*self.mosaics))[0])
+        l2 = list(list(zip(*self.mosaics))[1])
         l2.extend(l1)
         l= list(set(l2))
         l.sort()
         return l
-
-    def get_haplo_length(self, start, end):
-        # aya length moheme ya tedade SNP ha?
-        return len([p for p in self.positions if (p>start and p<end)])+1
-
 
     def find_best_match(self, removal_score):
 
@@ -61,57 +45,51 @@ class BlockSelector:
                        
             DEBUG and print(f'checking index {i}, position {pos}')
             if i==0:
-                self.states[pos] = BlockState(0, None, None)
+                self.states[pos] = BlockState(0, None)
             else:
-                prev_pos = self.positions[i-1] 
-                min_score = self.states[prev_pos].score + 1
-                self.states[pos] = BlockState(min_score, prev_pos, 'Recombinatoin')
-                DEBUG and print(f'R_SCORE_ {1}')
+                min_score = 9999999999
                 
-                for haplo in self._get_haplos_end_in(pos):
-                    previous_index = haplo[0]
-                    h_score = find_haplo_score(haplo, removal_score)
-                    haplo_score = self.states[previous_index].score+ h_score
-                    if haplo_score< min_score:
-                        min_score = haplo_score
-                        self.states[pos] = BlockState(min_score, previous_index, 'Block')
+                for mosaic in self._get_mosaics_end_in(pos):
+                    previous_index = mosaic[0]
+                    h_score = find_mosaic_score(mosaic, removal_score)
+                    current_score = self.states[previous_index].score+ h_score
+                    if current_score< min_score:
+                        min_score = current_score
+                        self.states[pos] = BlockState(min_score, previous_index)
             DEBUG and print(self.states[pos])
+            # DEBUG and print(self.states[pos])
 
-    def get_best_match_haplos(self):
+    def get_best_match_mosaics(self):
         result = []
-        index = self.max_index
-        # print(self.states)
+        index = self.last_position
         while index!=None:
             result.append(index)
-            # print(index)
             index = self.states[index].previous
         result.reverse()
         return result
 
-    def get_haplo_removal(self, start, end):
-        for h in self.haplos:
+    def get_mosaic_removal(self, start, end):
+        for h in self.mosaics:
             if h[0]==start and h[1]==end:
                 return h[2]
-        raise 'haplo not found'
+        raise Exception( f'mosaic not found for {start}-{end}')
 
     def get_statistics(self):
-        recombinations = 0
         removal = 0
-        haplos = 0
+        mosaics = 0
 
-        index = self.max_index
-        while index!=None:
+        index = self.last_position
+        while True:
             state = self.states[index]
-            if state.kind=='Block':
-                haplos+=1
-                removal+=self.get_haplo_removal(state.previous, index)
-            elif state.kind == 'Recombinatoin':
-                recombinations+=1
+            if state.previous == None:
+                break
 
+            mosaics+=1
+            removal+=self.get_mosaic_removal(state.previous, index)
             index = state.previous
 
-        print(f'recomb = {recombinations}, removal={removal}, haplos = {haplos}')
-        return removal, recombinations, haplos
+        DEBUG and print(f'#Removal={removal}, #Mosaics = {mosaics}')
+        return removal, mosaics
         
 
 

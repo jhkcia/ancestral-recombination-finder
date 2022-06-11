@@ -24,7 +24,7 @@ class TimeFinder:
         l.sort()
         return l
 
-    def find_mrca_time(self, start, end, removal):
+    def find_mrca_time(self, start, end, removal, mutation_rate=1e-8):
         positions = [p for p in self.positions if p>=start and p<=end]
         L = floor(end- start+1)
         DEBUG and print(f'start finding tmrca for position {start} to {end} with Length {L}')
@@ -47,7 +47,7 @@ class TimeFinder:
         inferred_ts = tsinfer.infer(sample_data)
         DEBUG and print(f'start inferring date  for {inferred_ts.num_trees} Trees')
         simplified_tree = tsdate.preprocess_ts(inferred_ts)
-        dated_ts = tsdate.date(simplified_tree, Ne=10000, mutation_rate=1e-8)
+        dated_ts = tsdate.date(simplified_tree, Ne=10000, mutation_rate=mutation_rate)
         T =  dated_ts.max_root_time
         DEBUG and print(T)
         return T
