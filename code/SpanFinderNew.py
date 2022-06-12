@@ -77,7 +77,6 @@ class SpanFinder:
         jojo = 0
         DATA = []
         sample_count = len(self.samples)
-        total_remove = 0
         prev_positions = []
         to_remove = set()
         while True:
@@ -99,7 +98,7 @@ class SpanFinder:
             current_position = next_position
             if len(to_remove)>0:
                 to_remove= set(to_remove)
-                total_remove+=len(to_remove)
+                total_remove=len(to_remove)
                 if total_remove > sample_count*threshold_percent/100:
                     self.print_log and print('max threshold arrived in position '+str(current_position))
                     break
