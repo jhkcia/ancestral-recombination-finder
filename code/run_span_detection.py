@@ -3,7 +3,7 @@ from utils import convert_mutation_df_to_vcf
 from SpanFinderNew import SpanFinder
 
 
-MAX_THRESHOLD = 30
+MAX_THRESHOLD = 10
 def find_for_items(start, end):
     muts = get_snp_dfs()
     vcf = convert_mutation_df_to_vcf(muts)
