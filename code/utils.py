@@ -63,11 +63,11 @@ def read_spans(input_file=None):
     spans = generate_full_spans(result, True)
     return spans
 
-def read_full_spans(input_file=None):
+def read_full_spans(min_threshold, input_file=None):
     result = read_result(input_file)
     spans = generate_full_spans(result, True)
 
-    muts = get_snp_dfs()
+    muts = get_snp_dfs(min_threshold)
     positions = list(muts['position'].unique())
     spans_with_mut_count = []
     for s in spans:

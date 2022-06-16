@@ -1,4 +1,3 @@
 /code/__pycache__
-/code/result
-/code/result_backup
+/code/result*
 .DS_Store
