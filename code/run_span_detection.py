@@ -4,8 +4,9 @@ from SpanFinderNew import SpanFinder
 
 
 MAX_THRESHOLD = 10
+MIN_SNP_THRESHOLD = 50
 def find_for_items(start, end):
-    muts = get_snp_dfs()
+    muts = get_snp_dfs(MIN_SNP_THRESHOLD)
     vcf = convert_mutation_df_to_vcf(muts)
 
     sf = SpanFinder(vcf, False)
@@ -24,7 +25,7 @@ import multiprocessing
 
 if __name__ == "__main__":
 
-    muts = get_snp_dfs()
+    muts = get_snp_dfs(MIN_SNP_THRESHOLD)
 
     l = len(muts['position'].unique())
     # l = 10

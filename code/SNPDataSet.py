@@ -24,10 +24,11 @@ def get_row_array(row, samples):
         arr.append(int(phased[1]))
     return arr
 
-def create_mutations_df(vcf, samples):
-    items = []
+def create_mutations_df(vcf, samples, min_threshold):
+    all_items = []
     for i, row in vcf.iterrows():
         arr = get_row_array(row, samples)
+        items = []
         for s in range(len(samples)):
             val1 = arr[2*s]
             val2 = arr[2*s+1]
@@ -35,12 +36,14 @@ def create_mutations_df(vcf, samples):
                 items.append([row['POS'], f'{samples[s]}_0', val1 ])
             if val2 !=0:
                 items.append([row['POS'], f'{samples[s]}_1', val2 ])
-    df = pd.DataFrame(items, columns = ['position', 'sample', 'state'])
+        if len(items)>min_threshold:
+            all_items.extend(items)
+    df = pd.DataFrame(all_items, columns = ['position', 'sample', 'state'])
     return df
 
 FILE_NAME = '../filtered_snps_ENSG00000160310.recode.vcf'
 
-def get_snp_dfs():
+def get_snp_dfs(min_threshold):
     names = get_vcf_names(FILE_NAME)
     names
     # vcf = pd.read_csv(FILE_NAME, comment='#', chunksize=1000000, delim_whitespace=True, header=None, names=names)
@@ -49,7 +52,7 @@ def get_snp_dfs():
 
     samples = names[9:]
 
-    mutations_df = create_mutations_df(vcf, samples)
+    mutations_df = create_mutations_df(vcf, samples, min_threshold)
     
     return mutations_df
 
