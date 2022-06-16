@@ -63,6 +63,19 @@ def read_spans(input_file=None):
     spans = generate_full_spans(result, True)
     return spans
 
+def read_full_spans(input_file=None):
+    result = read_result(input_file)
+    spans = generate_full_spans(result, True)
+
+    muts = get_snp_dfs()
+    positions = list(muts['position'].unique())
+    spans_with_mut_count = []
+    for s in spans:
+        x = len([p for p in positions if p>=s[0] and p<=s[1]])
+        spans_with_mut_count.append([s[0], s[1], s[2], x])
+
+    # START | END | REMOVAL | MUT_COUNT
+    return spans_with_mut_count
 
 
 def get_timed_haplo_input_files():
@@ -100,7 +113,7 @@ def generate_timed_spans(result):
 
     return spans
 
-def read_timed_spans(input_file=None):
+def read_timed_mosaics(input_file=None):
     result = read_timed_result(input_file)
     spans = generate_timed_spans(result)
     return spans
@@ -108,8 +121,8 @@ def read_timed_spans(input_file=None):
 from SNPDataSet import get_snp_dfs
 
 
-def read_full_timed_spans(input_file=None):
-    spans = read_timed_spans(input_file)
+def read_full_timed_mosaics(input_file=None):
+    spans = read_timed_mosaics(input_file)
     muts = get_snp_dfs()
     positions = list(muts['position'].unique())
     R = []

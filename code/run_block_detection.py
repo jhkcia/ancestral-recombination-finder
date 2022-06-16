@@ -1,7 +1,7 @@
 
-from utils import read_full_timed_spans
+from utils import read_full_timed_mosaics
 
-spans = read_full_timed_spans(None)
+spans = read_full_timed_mosaics(None)
 
 from BlockSelector import BlockSelector
 
