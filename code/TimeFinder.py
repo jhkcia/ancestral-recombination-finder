@@ -1,7 +1,9 @@
-DEBUG = False
-from math import floor
-import tsinfer
 import tsdate
+import tsinfer
+from math import floor
+DEBUG = False
+
+
 class TimeFinder:
     def __init__(self, haplos, population, mutations):
         self.haplos = haplos
@@ -20,14 +22,15 @@ class TimeFinder:
         l1 = list(list(zip(*self.haplos))[0])
         l2 = list(list(zip(*self.haplos))[1])
         l2.extend(l1)
-        l= list(set(l2))
+        l = list(set(l2))
         l.sort()
         return l
 
     def find_mrca_time(self, start, end, removal, mutation_rate=1e-8):
-        positions = [p for p in self.positions if p>=start and p<=end]
-        L = floor(end- start+1)
-        DEBUG and print(f'start finding tmrca for position {start} to {end} with Length {L}')
+        positions = [p for p in self.positions if p >= start and p <= end]
+        L = floor(end - start+1)
+        DEBUG and print(
+            f'start finding tmrca for position {start} to {end} with Length {L}')
         start = min(positions)
         sites = []
         individuals = [p for p in self.population if not p in removal]
@@ -45,10 +48,12 @@ class TimeFinder:
 
         DEBUG and print(f'start inferring time ')
         inferred_ts = tsinfer.infer(sample_data)
-        DEBUG and print(f'start inferring date  for {inferred_ts.num_trees} Trees')
+        DEBUG and print(
+            f'start inferring date  for {inferred_ts.num_trees} Trees')
         simplified_tree = tsdate.preprocess_ts(inferred_ts)
-        dated_ts = tsdate.date(simplified_tree, Ne=10000, mutation_rate=mutation_rate)
-        T =  dated_ts.max_root_time
+        dated_ts = tsdate.date(simplified_tree, Ne=10000,
+                               mutation_rate=mutation_rate)
+        T = dated_ts.max_root_time
         DEBUG and print(T)
         return T
 
