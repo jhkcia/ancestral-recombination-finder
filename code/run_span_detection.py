@@ -3,8 +3,8 @@ from utils import convert_mutation_df_to_vcf
 from SpanFinderNew import SpanFinder
 
 
-MAX_THRESHOLD = 50
-MIN_SNP_THRESHOLD = 50
+MAX_THRESHOLD = 30
+MIN_SNP_THRESHOLD = 1
 def find_for_items(start, end):
     muts = get_snp_dfs(MIN_SNP_THRESHOLD)
     vcf = convert_mutation_df_to_vcf(muts)
@@ -30,7 +30,7 @@ if __name__ == "__main__":
     l = len(muts['position'].unique())
     # l = 10
     # threads = 4
-    threads = 20
+    threads = 1
     siz = int(l/threads)+1
     processes = []
     for i in range (threads):
