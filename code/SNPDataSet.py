@@ -41,7 +41,7 @@ def create_mutations_df(vcf, samples, min_threshold):
     df = pd.DataFrame(all_items, columns = ['position', 'sample', 'state'])
     return df
 
-FILE_NAME = '../filtered_snps_ENSG00000160310.recode.vcf'
+FILE_NAME = '../simulation.vcf'
 
 def get_snp_dfs(min_threshold):
     names = get_vcf_names(FILE_NAME)
