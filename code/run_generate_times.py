@@ -50,7 +50,7 @@ def infer_times(path, min_threshold, vcf_path):
     file_name = f"infer_time_{path.split('/')[-1]}"
     with open(f'./result/{file_name}', 'w') as f:
         f.write("%s\n" % times)
-
+    return tf
 
 if __name__ == "__main__":
     dirs = get_all_haplo_input_files()
